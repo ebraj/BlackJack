@@ -26,3 +26,12 @@ body {
   width: 100%;
   margin: 0 auto;
 }
+
+@layer components {
+  .dark-btn {
+    @apply w-full rounded-md px-5 py-3 bg-primary-black text-primary-yellow;
+  }
+  .yellow-btn {
+    @apply px-5 py-2 text-primary-black rounded-md bg-primary-yellow font-bold;
+  }
+}

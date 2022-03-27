@@ -1,16 +1,26 @@
+import Link from "next/link";
+import { useRouter } from "next/router";
+
 function Navbar() {
+  const router = useRouter();
   return (
     <nav className="bg-primary-black text-primary-yellow font-bold">
       <div className="container-1200 flex justify-between items-center px-5 py-5">
         <div>
-          <h2>BlackJack</h2>
+          <Link href="/" passHref>
+            <h2 className="cursor-pointer">BlackJack</h2>
+          </Link>
         </div>
         <ul className="flex items-center justify-between space-x-5">
-          <li>$100</li>
+          <li>Current - $100</li>
           <li>
-            <button className="px-7 py-2 text-primary-black rounded-md bg-primary-yellow font-bold">
-              Deposit
-            </button>
+            {router.pathname === "/" ? (
+              <button className="yellow-btn disabled:opacity-50" disabled>
+                Deposit
+              </button>
+            ) : (
+              <button className="yellow-btn">Deposit</button>
+            )}
           </li>
         </ul>
       </div>

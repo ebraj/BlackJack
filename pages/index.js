@@ -1,10 +1,20 @@
+import { useState } from "react";
 import Head from "next/head";
 import Image from "next/image";
+import Link from "next/link";
+
 // import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 
 // Components
 export default function Home() {
+  const [playerName, setPlayerName] = useState("");
+  const inputHandler = (e) => {
+    setPlayerName(e.target.value);
+  };
+  const startHandler = () => {
+    console.log(playerName);
+  };
   return (
     <div>
       <Head>
@@ -30,10 +40,21 @@ export default function Home() {
                 <input
                   className="mb-2 w-full rounded-md px-5 py-3 outline-none"
                   placeholder="Name"
+                  value={playerName}
+                  onChange={inputHandler}
                 ></input>
-                <button className="w-full rounded-md px-5 py-3 bg-primary-black text-primary-yellow">
-                  Start
-                </button>
+                <Link
+                  href={{
+                    pathname: "play",
+                    query: {
+                      playerName,
+                    },
+                  }}
+                >
+                  <button className="dark-btn" onClick={startHandler}>
+                    Start
+                  </button>
+                </Link>
               </div>
             </div>
           </div>
