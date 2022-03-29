@@ -2,8 +2,9 @@ import React, { useEffect } from "react";
 import Image from "next/image";
 import CardImage from "./CardImage";
 
-function Card({ title = "Player", cards }) {
-  console.log(cards);
+function Card({ title = "Player", cards }) { 
+
+  const cardArray = cards.toString().replace('[', '').replace(']', '').replace(" ", '').split(',').map((data) => data.replace(" ", ''));
   return (
     <>
       <div className="px-5 py-3 rounded-md bg-background-green">
@@ -12,10 +13,17 @@ function Card({ title = "Player", cards }) {
           <span className="w-20 bg-primary-yellow h-px"></span>
         </div>
         <div className="flex space-x-4">
-          {cards.map((card) => {
+          {cardArray.map((card, index) => {
+            if(card != "null "){
             return (
-              <CardImage key={card} imgSrc={`/images/cards-png/${card}.png`} />
+              <CardImage key={card + "-" + index} imgSrc={`/images/cards-png/${card}.png`} />
             );
+            }
+            else{
+              return (
+                <CardImage key={card} imgSrc={`/images/cards-png/reverse.png`} />
+              );
+            }
           })}
         </div>
       </div>
