@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-function Navbar() {
+function Navbar({ totalAmount = "100" }) {
   const router = useRouter();
   return (
     <nav className="bg-primary-black text-primary-yellow font-bold">
@@ -12,7 +12,7 @@ function Navbar() {
           </Link>
         </div>
         <ul className="flex items-center justify-between space-x-5">
-          <li>Current - $100</li>
+          <li>Current - {`$${totalAmount}`}</li>
           <li>
             {router.pathname === "/" ? (
               <button className="yellow-btn disabled:opacity-50" disabled>

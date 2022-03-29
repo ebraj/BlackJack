@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
+import axios from "axios";
 
 // import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
@@ -13,7 +14,13 @@ export default function Home() {
     setPlayerName(e.target.value);
   };
   const startHandler = () => {
-    console.log(playerName);
+    axios
+      .post("http://20.151.112.0:8080/v1/player", {
+        name: playerName,
+      })
+      .then((response) => {
+        console.log(response.data.Player);
+      });
   };
   return (
     <div>
