@@ -21,8 +21,8 @@ body {
   width: 100%;
   margin: 0 auto;
 }
-.container-500 {
-  max-width: 500px;
+.container-400 {
+  max-width: 400px;
   width: 100%;
   margin: 0 auto;
 }
@@ -34,4 +34,8 @@ body {
   .yellow-btn {
     @apply px-5 py-2 text-primary-black rounded-md bg-primary-yellow font-bold;
   }
+}
+
+.custom-background {
+  background-color: rgba(0, 0, 0, 0.658);
 }

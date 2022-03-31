@@ -14,13 +14,9 @@ export default function Home() {
     setPlayerName(e.target.value);
   };
   const startHandler = () => {
-    axios
-      .post("http://20.151.112.0:8080/v1/player", {
-        name: playerName,
-      })
-      .then((response) => {
-        console.log(response.data.Player);
-      });
+    axios.post("http://20.151.112.0:8080/v1/player", {
+      name: playerName,
+    });
   };
   return (
     <div>
