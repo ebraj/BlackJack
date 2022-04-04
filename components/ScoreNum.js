@@ -1,6 +1,6 @@
 import React from "react";
 
-function ScoreNum({ reqNum = "X", playerName = "Player" }) {
+function ScoreNum({ reqNum = "X", playerName }) {
   return (
     <div className="px-6 py-3 bg-primary-black rounded-md">
       <p className="text-primary-yellow pb-2">{playerName}</p>

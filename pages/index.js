@@ -17,6 +17,9 @@ export default function Home() {
     axios.post("http://20.151.112.0:8080/v1/player", {
       name: playerName,
     });
+    axios.post("http://20.151.112.0:8080/v1/bet", {
+      betAmount: "0",
+    });
   };
   return (
     <div>

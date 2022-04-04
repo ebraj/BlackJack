@@ -5,59 +5,52 @@ import axios from "axios";
 import Navbar from "../components/Navbar";
 import Card from "../components/Card";
 import Score from "../components/Score";
+import Winner from "../components/Winner";
 
 // Components
 export default function Play() {
-  const [playBetAmt, setPlayBetAmt] = useState();
+  const [playerDetails, setPlayerDetails] = useState([
+    { name: "Player", betAmount: "0", balance: "XXX" },
+  ]);
+  const [isWinnerDisplay, setIsWinnerDisplay] = useState(false);
+  const [winnerMsg, setWinnerMsg] = useState("");
+  const [playBetAmt, setPlayBetAmt] = useState("");
   const [playerDatass, setPlayerDatass] = useState({ decks: [] });
-  //   const [betAmount, setBetAmount] = useState();
   const [dealerDatas, setDealersDatas] = useState({ decks: [] });
   const [play, setPlay] = useState(true);
-  const [isBtnVis, setIsBtbVis] = useState(true);
   const handleBetAmountFun = (e) => {
-    console.log(e.target.value);
     setPlayBetAmt(e.target.value);
+  };
+  const playAgainFun = () => {
+    setPlay(true);
+    setPlayerDatass({ decks: [] });
+    setDealersDatas({ decks: [] });
+    setPlayBetAmt("");
+  };
+  const winnerModalHandler = () => {
+    setIsWinnerDisplay(false);
   };
   const { name = "Player" } = playerDatass;
 
   const playGame = () => {
-    axios
-      .post("http://20.151.112.0:8080/v1/start", {
-        betAmount: 1,
-      })
-      .then((response) => {
-        if (!response.data.hasOwnProperty("message")) {
-          setDealersDatas(response.data.Dealer);
-          setPlayerDatass(response.data.Player);
-        } else {
-          setDealersDatas({ decks: [] });
-          setPlayerDatass(response.data.player);
-        }
-      })
-      .catch((err) => {
-        // console.log(err.response.data.message);
-      });
+    axios.post("http://20.151.112.0:8080/v1/bet", {
+      betAmount: playBetAmt,
+    });
+    axios.get("http://20.151.112.0:8080/v1/start").then((response) => {
+      if (!response.data.hasOwnProperty("message")) {
+        setDealersDatas(response.data.Dealer);
+        setPlayerDatass(response.data.Player);
+      } else {
+        setDealersDatas({ decks: [] });
+        setPlayerDatass(response.data.player);
+        setWinnerMsg(response.data.message);
+        setIsWinnerDisplay(true);
+      }
+    });
+    axios.get("http://20.151.112.0:8080/v1/player").then((res) => {
+      setPlayerDetails(res.data);
+    });
     setPlay(false);
-    setPlayBetAmt(0);
-  };
-
-  const rePlayGame = () => {
-    setIsBtbVis(true);
-    axios
-      .get("http://20.151.112.0:8080/v1/start")
-      .then((response) => {
-        if (!response.data.hasOwnProperty("message")) {
-          setDealersDatas(response.data.Dealer);
-          setPlayerDatass(response.data.Player);
-        } else {
-          setDealersDatas({ decks: [] });
-          setPlayerDatass(response.data.player);
-        }
-        // forceUpdate();
-      })
-      .catch((err) => {
-        // console.log(err.response.data.message);
-      });
   };
 
   const hit = () => {
@@ -70,15 +63,19 @@ export default function Play() {
         } else {
           setPlayerDatass(response.data.player);
           console.log(response.data.message);
-          setIsBtbVis(false);
+          setWinnerMsg(response.data.message);
+          setIsWinnerDisplay(true);
         }
       })
       .catch((err) => {
         if (err.response.data.message === "Player Bust") {
           setPlayerDatass(err.response.data.player);
-          setIsBtbVis(false);
+          setWinnerMsg(err.response.data.message);
+          setIsWinnerDisplay(true);
         }
         console.log(err.response.data.message);
+        setWinnerMsg(err.response.data.message);
+        setIsWinnerDisplay(true);
       });
   };
 
@@ -89,39 +86,57 @@ export default function Play() {
         if (!response.data.hasOwnProperty("message")) {
           setDealersDatas(response.data.Dealer);
           // setPlayerDatass(response.data.Player);
-          setIsBtbVis(false);
-          console.log("Player Won");
+          setWinnerMsg("Player Won");
+          setIsWinnerDisplay(true);
         } else if (response.data.message === "The result is Draw") {
           setDealersDatas(response.data.d.Dealer);
           setPlayerDatass(response.data.d.Player);
           console.log(response.data.message);
-          setIsBtbVis(false);
+          setWinnerMsg(response.data.message);
+          setIsWinnerDisplay(true);
         } else {
           setDealersDatas(response.data.dealer);
           console.log(response.data.message);
-          setIsBtbVis(false);
+          setWinnerMsg(response.data.message);
+          setIsWinnerDisplay(true);
         }
       })
       .catch((err) => {
         if (err.response.status === 400) {
           setDealersDatas(err.response.data.dealer);
           console.log(err.response.data.message);
-          setIsBtbVis(false);
+          setWinnerMsg(err.response.data.message);
+          setIsWinnerDisplay(true);
         } else {
           console.log(err.response.data.message);
+          setWinnerMsg(response.data.message);
+          setIsWinnerDisplay(true);
         }
       });
   };
+
+  useEffect(() => {
+    axios.get("http://20.151.112.0:8080/v1/player").then((res) => {
+      setPlayerDetails(res.data);
+    });
+  }, [playerDetails]);
   return (
     <>
+      {isWinnerDisplay ? (
+        <Winner
+          playAgainFun={playAgainFun}
+          winnerModalHandler={winnerModalHandler}
+          winnerMsg={winnerMsg}
+        />
+      ) : null}
       <div>
         <div className="flex flex-col w-full min-h-[100vh]">
-          <Navbar />
+          <Navbar currentBalance={playerDetails.balance} />
           <main className="grow flex items-center bg-primary-green">
             <div className="container-1200 mx-auto px-5 py-5">
               <Score
-                playerName={name}
-                betAmount={playBetAmt}
+                playerName={playerDetails.name}
+                betAmount={playerDetails.betAmount}
                 cardValue={playerDatass.cardValue}
                 dealerValue={dealerDatas.cardValue}
               />
@@ -142,7 +157,8 @@ export default function Play() {
                           className="w-full rounded-md px-5 py-3 outline-none"
                           placeholder="Bet Amount"
                           type="number"
-                          min={0}
+                          min="0"
+                          max=""
                           value={playBetAmt}
                           onChange={handleBetAmountFun}
                         />
@@ -154,12 +170,14 @@ export default function Play() {
                         </button>
                       </>
                     ) : (
-                      <button
-                        className="dark-btn mt-2.5 mb-2"
-                        onClick={rePlayGame}
-                      >
-                        Replay
-                      </button>
+                      <div className="flex flex-col">
+                        <button className="dark-btn mb-2" onClick={hit}>
+                          Hit
+                        </button>
+                        <button className="dark-btn" onClick={stand}>
+                          Stand
+                        </button>
+                      </div>
                     )}
                   </div>
                 </div>
@@ -175,7 +193,7 @@ export default function Play() {
                   ) : (
                     <Card title={name} cards="[reverse,reverse]" />
                   )}
-                  {isBtnVis ? (
+                  {/* {isBtnVis ? (
                     <div className="flex space-x-10">
                       <button className="dark-btn mt-2.5 mb-2" onClick={hit}>
                         Hit
@@ -184,7 +202,7 @@ export default function Play() {
                         Stand
                       </button>
                     </div>
-                  ) : null}
+                  ) : null} */}
                 </div>
               </div>
             </div>

@@ -4,19 +4,12 @@ import { useRouter } from "next/router";
 import Popup from "./Popup";
 import axios from "axios";
 
-function Navbar() {
+function Navbar({ currentBalance = "XXX" }) {
   const [isPopDisplay, setIsPopDisplay] = useState(false);
-  const [currentBalance, setCurrentBalance] = useState(0);
   const handleDepositMain = () => {
     setIsPopDisplay(false);
   };
   const router = useRouter();
-  useEffect(() => {
-    axios.get("http://20.151.112.0:8080/v1/start").then((res) => {
-      setCurrentBalance(res.data.Player.balance);
-    });
-  }, []);
-  console.log(currentBalance);
 
   return (
     <nav className="bg-primary-black text-primary-yellow font-bold">
