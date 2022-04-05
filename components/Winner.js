@@ -1,6 +1,4 @@
-import Link from "next/link";
 import React, { useState } from "react";
-import axios from "axios";
 
 function Winner({ playAgainFun, winnerModalHandler, winnerMsg }) {
   const handlePlayFun = () => {
@@ -12,7 +10,7 @@ function Winner({ playAgainFun, winnerModalHandler, winnerMsg }) {
       <div className="container-400 mx-auto">
         <div className="bg-primary-green rounded-md overflow-hidden">
           <h2 className="text-xl text-center font-bold text-primary-yellow bg-primary-black px-10 py-5">
-            Congratulations 🎉
+            Results !
           </h2>
           <div className="px-10 pb-10">
             <div className="py-10 px-2">
