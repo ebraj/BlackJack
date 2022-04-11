@@ -4,7 +4,8 @@ import { useRouter } from "next/router";
 import Popup from "./Popup";
 import axios from "axios";
 
-function Navbar({ currentBalance = "XXX" }) {
+function Navbar({ playerDetails }) {
+  const { balance = "XXX" } = playerDetails;
   const [isPopDisplay, setIsPopDisplay] = useState(false);
   const handleDepositMain = () => {
     setIsPopDisplay(false);
@@ -21,7 +22,7 @@ function Navbar({ currentBalance = "XXX" }) {
           </Link>
         </div>
         <ul className="flex items-center justify-between space-x-5">
-          <li>Current - {`$${currentBalance}`}</li>
+          <li>Current - {`$${balance}`}</li>
           <li>
             {router.pathname === "/" ? (
               <button className="yellow-btn disabled:opacity-50" disabled>

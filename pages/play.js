@@ -33,8 +33,15 @@ export default function Play() {
   const { name = "Player" } = playerDatass;
 
   const playGame = () => {
-    axios.post("http://20.151.112.0:8080/v1/bet", {
-      betAmount: playBetAmt,
+    axios
+      .post("http://20.151.112.0:8080/v1/bet", {
+        betAmount: playBetAmt,
+      })
+      .then((res) => {
+        console.log(res);
+      });
+    axios.get("http://20.151.112.0:8080/v1/player").then((res) => {
+      setPlayerDetails(res.data);
     });
     axios.get("http://20.151.112.0:8080/v1/start").then((response) => {
       if (!response.data.hasOwnProperty("message")) {
@@ -45,11 +52,10 @@ export default function Play() {
         setPlayerDatass(response.data.player);
         setWinnerMsg(response.data.message);
         setIsWinnerDisplay(true);
+        console.log(response.data.message);
       }
     });
-    axios.get("http://20.151.112.0:8080/v1/player").then((res) => {
-      setPlayerDetails(res.data);
-    });
+
     setPlay(false);
   };
 
@@ -119,7 +125,7 @@ export default function Play() {
     axios.get("http://20.151.112.0:8080/v1/player").then((res) => {
       setPlayerDetails(res.data);
     });
-  }, [playerDetails]);
+  }, []);
   return (
     <>
       {isWinnerDisplay ? (
@@ -131,7 +137,10 @@ export default function Play() {
       ) : null}
       <div>
         <div className="flex flex-col w-full min-h-[100vh]">
-          <Navbar currentBalance={playerDetails.balance} />
+          <Navbar
+            currentBalance={playerDetails.balance}
+            playerDetails={playerDetails}
+          />
           <main className="grow flex items-center bg-primary-green">
             <div className="container-1200 mx-auto px-5 py-5">
               <Score
