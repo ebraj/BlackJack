@@ -7,10 +7,18 @@ import axios from "axios";
 function Navbar({ playerDetails }) {
   const { balance } = playerDetails;
   const [isPopDisplay, setIsPopDisplay] = useState(false);
+  let refresh = false;
   const handleDepositMain = () => {
     setIsPopDisplay(false);
+    refresh = true;
   };
   const router = useRouter();
+
+  if(refresh){
+    axios.get("http://20.151.112.0:8080/v1/player").then((res) => {
+      setPlayerDetails(res.data);
+    })
+  }
 
   return (
     <nav className="bg-primary-black text-primary-yellow font-bold">
