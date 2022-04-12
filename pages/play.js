@@ -38,12 +38,8 @@ export default function Play() {
         betAmount: playBetAmt,
       })
       .then((res) => {
-        console.log(res);
-      });
-    axios.get("http://20.151.112.0:8080/v1/player").then((res) => {
-      setPlayerDetails(res.data);
-    });
-    axios.get("http://20.151.112.0:8080/v1/start").then((response) => {
+      console.log(res);
+      axios.get("http://20.151.112.0:8080/v1/start").then((response) => {
       if (!response.data.hasOwnProperty("message")) {
         setDealersDatas(response.data.Dealer);
         setPlayerDatass(response.data.Player);
@@ -55,8 +51,21 @@ export default function Play() {
         console.log(response.data.message);
       }
     });
-
+    axios.get("http://20.151.112.0:8080/v1/player").then((res) => {
+      setPlayerDetails(res.data);
+    });
     setPlay(false);
+      }).catch((err) => {
+        if(err.response.data.message.includes("For input")){
+          setWinnerMsg("Please enter the balance");
+          setIsWinnerDisplay(true);
+        }
+        else{
+          setWinnerMsg("Can't bet more than balance");
+          setIsWinnerDisplay(true);
+        }
+
+      });
   };
 
   const hit = () => {
@@ -123,7 +132,16 @@ export default function Play() {
 
   useEffect(() => {
     axios.get("http://20.151.112.0:8080/v1/player").then((res) => {
-      setPlayerDetails(res.data);
+      if(res.data.hasOwnProperty("message")){
+        setPlayerDetails(res.data.player);
+      }
+      else{
+        setPlayerDetails(res.data);
+      }
+      
+    }).catch((err) => {
+      console.log("error?");
+      setPlayerDetails(err.response.data.player);
     });
   }, []);
   return (
