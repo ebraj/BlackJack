@@ -8,13 +8,16 @@ function Popup({ handleDepositMain }) {
     setDepositAmount(e.target.value);
   };
   const handleDeposit = () => {
-    handleDepositMain();
+    // handleDepositMain();
     axios
       .post("http://20.151.112.0:8080/v1/deposit", {
         amount: depositAmount,
       })
       .then((res) => {
         console.log(res);
+        axios.get("http://20.151.112.0:8080/v1/player").then((res) => {
+          handleDepositMain(res.data.player);
+        });
       });
   };
   return (

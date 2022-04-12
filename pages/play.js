@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import axios from "axios";
-
 import Navbar from "../components/Navbar";
 import Card from "../components/Card";
 import Score from "../components/Score";
@@ -38,33 +37,32 @@ export default function Play() {
         betAmount: playBetAmt,
       })
       .then((res) => {
-      console.log(res);
-      axios.get("http://20.151.112.0:8080/v1/start").then((response) => {
-      if (!response.data.hasOwnProperty("message")) {
-        setDealersDatas(response.data.Dealer);
-        setPlayerDatass(response.data.Player);
-      } else {
-        setDealersDatas({ decks: [] });
-        setPlayerDatass(response.data.player);
-        setWinnerMsg(response.data.message);
-        setIsWinnerDisplay(true);
-        console.log(response.data.message);
-      }
-    });
-    axios.get("http://20.151.112.0:8080/v1/player").then((res) => {
-      setPlayerDetails(res.data);
-    });
-    setPlay(false);
-      }).catch((err) => {
-        if(err.response.data.message.includes("For input")){
+        console.log(res);
+        axios.get("http://20.151.112.0:8080/v1/start").then((response) => {
+          if (!response.data.hasOwnProperty("message")) {
+            setDealersDatas(response.data.Dealer);
+            setPlayerDatass(response.data.Player);
+          } else {
+            setDealersDatas({ decks: [] });
+            setPlayerDatass(response.data.player);
+            setWinnerMsg(response.data.message);
+            setIsWinnerDisplay(true);
+            console.log(response.data.message);
+          }
+        });
+        axios.get("http://20.151.112.0:8080/v1/player").then((res) => {
+          setPlayerDetails(res.data);
+        });
+        setPlay(false);
+      })
+      .catch((err) => {
+        if (err.response.data.message.includes("For input")) {
           setWinnerMsg("Please enter the balance");
           setIsWinnerDisplay(true);
-        }
-        else{
+        } else {
           setWinnerMsg("Can't bet more than balance");
           setIsWinnerDisplay(true);
         }
-
       });
   };
 
@@ -131,22 +129,23 @@ export default function Play() {
   };
 
   useEffect(() => {
-    axios.get("http://20.151.112.0:8080/v1/player").then((res) => {
-      if(res.data.hasOwnProperty("message")){
-        setPlayerDetails(res.data.player);
-      }
-      else{
-        setPlayerDetails(res.data);
-      }
-      
-    }).catch((err) => {
-      console.log("error?");
-      setPlayerDetails(err.response.data.player);
-    });
+    axios
+      .get("http://20.151.112.0:8080/v1/player")
+      .then((res) => {
+        if (res.data.hasOwnProperty("message")) {
+          setPlayerDetails(res.data.player);
+        } else {
+          setPlayerDetails(res.data);
+        }
+      })
+      .catch((err) => {
+        console.log("error?");
+        setPlayerDetails(err.response.data.player);
+      });
   }, []);
   return (
     <>
-      {isWinnerDisplay ? (
+      {isWinnerDisplay && playerDetails ? (
         <Winner
           playAgainFun={playAgainFun}
           winnerModalHandler={winnerModalHandler}
@@ -155,10 +154,7 @@ export default function Play() {
       ) : null}
       <div>
         <div className="flex flex-col w-full min-h-[100vh]">
-          <Navbar
-            currentBalance={playerDetails.balance}
-            playerDetails={playerDetails}
-          />
+          <Navbar playerDetails={playerDetails} />
           <main className="grow flex items-center bg-primary-green">
             <div className="container-1200 mx-auto px-5 py-5">
               <Score
