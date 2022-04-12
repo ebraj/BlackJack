@@ -5,7 +5,7 @@ import Popup from "./Popup";
 import axios from "axios";
 
 function Navbar({ playerDetails }) {
-  const { balance = "XXX" } = playerDetails;
+  const { balance } = playerDetails;
   const [isPopDisplay, setIsPopDisplay] = useState(false);
   const handleDepositMain = () => {
     setIsPopDisplay(false);

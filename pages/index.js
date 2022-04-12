@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,6 +9,9 @@ import Navbar from "../components/Navbar";
 
 // Components
 export default function Home() {
+  const [playerDetails, setPlayerDetails] = useState([
+    { name: "Player", betAmount: "0", balance: "XXX" },
+  ]);
   const [playerName, setPlayerName] = useState("");
   const inputHandler = (e) => {
     setPlayerName(e.target.value);
@@ -21,6 +24,12 @@ export default function Home() {
       betAmount: "0",
     });
   };
+  useEffect(() => {
+    axios.get("http://20.151.112.0:8080/v1/player").then((res) => {
+      setPlayerDetails(res.data);
+    });
+  }, []);
+
   return (
     <div>
       <Head>
@@ -30,7 +39,7 @@ export default function Home() {
       </Head>
 
       <div className="flex flex-col w-full min-h-[100vh]">
-        <Navbar />
+        <Navbar playerDetails={playerDetails} />
         <main className="grow flex items-center bg-primary-green">
           <div className="container-400 mx-auto px-5 py-10">
             <div className="bg-background-green p-8 rounded-md">
